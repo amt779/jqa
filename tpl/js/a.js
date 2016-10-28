@@ -86,8 +86,7 @@ var a = {
 	}
 	,form	: {
 		update	: function(cnf){
-			if(undefined == cnf.data['set'])
-				cnf.data['set'] = {};
+			cnf.data['set'] = {};
 			$.each(cnf.form.find(':input:not([type="hidden"],[type="button"],[type="submit"])'), function (index, element) {
 				if( 'string' == typeof( $(element).val() ) )
 					cnf.data['set'][$(element).attr('name')] = $(element).val();
