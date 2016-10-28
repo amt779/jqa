@@ -1,2 +1,2 @@
 # jqa
-jquety A-extension
+jq a-extension
