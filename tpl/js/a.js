@@ -184,7 +184,7 @@ var a = {
 			return formValid;
 		}
 	}
-	,jsonFrorm : {
+	,jsonForm : {
 		build: function(cnf){
 			form_cntainer = cnf.form.find('div:first');
 			form_cntainer.empty();
