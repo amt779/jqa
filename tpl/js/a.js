@@ -184,6 +184,71 @@ var a = {
 			return formValid;
 		}
 	}
+	,jsonFrorm : {
+		build: function(cnf){
+			form_cntainer = cnf.form.find('div:first');
+			form_cntainer.empty();
+			for(var k in cnf.data) {
+				var str = '';
+				cnf.data[k].id = k;
+				if( undefined==cnf.data[k].html ) cnf.data[k].html = {};
+				if( undefined==cnf.data[k].html.div_len ) cnf.data[k].html.div_len = 4;				
+				if(typeof cnf.data[k].title === 'undefined') cnf.data[k].title = cnf.data[k].id;
+				str += '<div class="col-sm-'+cnf.data[k].html.div_len+'">';
+				str += '<label for="'+cnf.data[k].id+'">'+cnf.data[k].title+'</label>';
+				switch(cnf.data[k].type){
+					case 'input':
+						if ( undefined == cnf.data[k].input.type ) cnf.data[k].input.type = 'text';
+						str += '<'+cnf.data[k].type+' name='+cnf.data[k].id+' class="form-control"';
+						if('object' === typeof cnf.data[k][cnf.data[k].type]){
+							for(var j in cnf.data[k][cnf.data[k].type]){
+								str += j+'="'+cnf.data[k][cnf.data[k].type][j]+'"';
+							}
+						}
+						str += '>';
+					break;
+					case 'select':
+						str += '<'+cnf.data[k].type+' name="'+cnf.data[k].id+'" class="form-control"';
+						if('object' === typeof cnf.data[k][cnf.data[k].type]){
+							for(var j in cnf.data[k][cnf.data[k].type]){
+								str += j+'="'+cnf.data[k][cnf.data[k].type][j]+'"';
+							}
+						}
+						str += '>';
+						if('object' === typeof cnf.data[k].enum){
+							for(var j in cnf.data[k].enum){
+								if('object' === typeof cnf.data[k].enum[j]){
+									str +='<option value="'+cnf.data[k].enum[j].value+'">'+cnf.data[k].enum[j].name+'</option>';
+								}
+								else str +='<option>'+cnf.data[k].enum[j]+'</option>';
+							}
+						}
+						str += '</'+cnf.data[k].type+'>';
+					break;
+					case 'textarea':
+						str += '<'+cnf.data[k].type+' name="'+cnf.data[k].id+'" class="form-control"';
+						if('object' === typeof cnf.data[k][cnf.data[k].type]){
+							for(var j in cnf.data[k][cnf.data[k].type]){
+								str += j+'="'+cnf.data[k][cnf.data[k].type][j]+'"';
+							}
+						}
+						str += '>';
+						if('object' === typeof cnf.data[k].enum){
+							for(var j in cnf.data[k].enum){
+								if('object' === typeof cnf.data[k].enum[j]){
+									str +='<option value="'+cnf.data[k].enum[j].value+'">'+cnf.data[k].enum[j].name+'</option>';
+								}
+								else str +='<option>'+cnf.data[k].enum[j]+'</option>';
+							}
+						}
+						str += '</'+cnf.data[k].type+'>';
+					break;
+				}
+				str += '</div>';
+				form_cntainer.append(str).find('[name="'+cnf.data[k].id+'"]').val(cnf.data[k].value);
+			}
+		}
+	}
 	,table : {
 		getOrderby	: function(){
 			var cnf = {
@@ -378,7 +443,6 @@ var a = {
 		}
 	}
 	,data	: {
-		
 		json	: {
 			killNullTrim : function(jso){
 				switch( typeof(jso) ){
