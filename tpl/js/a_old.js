@@ -37,13 +37,11 @@ var a = {
 					,fp			: cnf.fp
 					,output		: {
 						print	: true
-						,format	: 'json'
 					}
 				}
 				,success: function(msg){
 					if ( 'function'===typeof(cnf.callback.success) ){
-						cnf.callback.success(JSON.parse(msg));
-						//cnf.callback.success(msg);
+						cnf.callback.success(msg);
 					}
 				}
 				,failure: function(msg){
@@ -71,8 +69,7 @@ var a = {
 				}
 				,success: function(msg){
 					if ( 'function'===typeof(cnf.callback.success) ){
-						cnf.callback.success(JSON.parse(msg));
-						//cnf.callback.success(msg);
+						cnf.callback.success(msg);
 					}
 				}
 				,failure: function(msg){
@@ -86,15 +83,15 @@ var a = {
 	}
 	,form	: {
 		update	: function(cnf){
-			//cnf.data['set'] = {};
-			$.each(cnf.form.find(':input:not([type="hidden"],[type="button"],[type="submit"])'), function (index, element) {
+			cnf.data['set'] = {};
+			$.each(cnf.form.find('input[type=text],input[type=email],select,textarea'), function (index, element) {
 				if( 'string' == typeof( $(element).val() ) )
 					cnf.data['set'][$(element).attr('name')] = $(element).val();
 				if( 'object' == typeof( $(element).val() ) )
 					cnf.data['set'][$(element).attr('name')] = JSON.stringify($(element).val());
 			});
 			cnf.data['where']	= new Array;
-			$.each(cnf.form.find(':input[type=hidden]'), function (index, element) {
+			$.each(cnf.form.find('input[type=hidden]'), function (index, element) {
 				if( 'tn'==$(element).attr('name') )
 					cnf.data['table'] = $(element).val();
 				else
@@ -116,14 +113,14 @@ var a = {
 				}
 			};
 			var set = {};
-			$.each(cnf.form.find(':input:not([type="hidden"],[type="button"],[type="submit"])'), function (index, element) {
+			$.each(cnf.form.find('input[type=text],input[type=email],select,textarea'), function (index, element) {
 				if( 'string' == typeof( $(element).val() ) )
 					set[$(element).attr('name')] = $(element).val();
 				if( 'object' == typeof( $(element).val() ) )
 					set[$(element).attr('name')] = JSON.stringify($(element).val());
 			});
 			data['set']		= set;
-			$.each(cnf.form.find(':input[type=hidden]'), function (index, element) {
+			$.each(cnf.form.find('input[type=hidden]'), function (index, element) {
 				if( 'tn'==$(element).attr('name') )
 					data['table'] = $(element).val();
 			});
@@ -146,21 +143,6 @@ var a = {
 				}
 			})
 		}
-		,delete	: function(cnf){
-			cnf.data['where']	= new Array;
-			$.each(cnf.form.find(':input[type=hidden]'), function (index, element) {
-				if( 'tn'==$(element).attr('name') )
-					cnf.data['table'] = $(element).val();
-				else
-					cnf.data['where'].push({
-						'k'	: $(element).attr('name') 
-						,'v': $(element).val() 
-						,'c': '=' 
-					});
-			});
-			a.db.delete(cnf);
-		}
-		
 		,isValid: function(form){
 			formValid = true;
 			$(form).find('input, select').each(function() {
@@ -186,7 +168,7 @@ var a = {
 			return formValid;
 		}
 	}
-	,jsonForm : {
+	,jsonFrorm : {
 		build: function(cnf){
 			form_cntainer = cnf.form.find('div:first');
 			form_cntainer.empty();
@@ -338,7 +320,6 @@ var a = {
 				|| undefined==cnf.data.table	|| ''== cnf.data.table
 				|| undefined==cnf.url			|| ''== cnf.url			// адрев в этом домене, который проксирует к обработчику запросов
 			){	console.log('не могу продложить, так как передан плохой конфиг');
-				console.log(cnf);
 				return false;
 			}
 			
@@ -372,12 +353,12 @@ var a = {
 				}
 			};
 			$.extend( true, cnf, cnf1 );
-			
+
 			if(	undefined==cnf.data.url 		|| ''== cnf.data.url	// адрес обработчика запросов
 				|| undefined==cnf.data.table	|| ''== cnf.data.table
 				|| undefined==cnf.data.set		|| ''== cnf.data.set
 				|| undefined==cnf.data.where	|| '1'== cnf.data.where
-				|| undefined==cnf.url			|| ''== cnf.url			// адрес в этом домене, который проксирует к обработчику запросов
+				|| undefined==cnf.url			|| ''== cnf.url			// адрев в этом домене, который проксирует к обработчику запросов
 			){	
 				var msg = 'не могу выполнить, так как передан плохой конфиг';
 				console.log(msg);
@@ -402,102 +383,28 @@ var a = {
 				}
 			})
 		}
-		,delete	: function(cnf1){
-			var cnf = {
-				data : {
-					operation	: 'delete'
-					,where		: '1'
-					,output		: {
-						print	: true
-						,format	: 'json'
-					}
-				}
-			};
-			$.extend( true, cnf, cnf1 );
+	}
+	,b	: {
+		moneyFormat1 : function(n){ // округаляет до сотых или целых
+			if( isNaN(n) ) return n;
 			
-			if(	undefined==cnf.data.url 		|| ''== cnf.data.url	// адрес обработчика запросов
-				|| undefined==cnf.data.table	|| ''== cnf.data.table
-				|| undefined==cnf.data.where	|| '1'== cnf.data.where
-				|| undefined==cnf.url			|| ''== cnf.url			// адрес в этом домене, который проксирует к обработчику запросов
-			){	
-				var msg = 'не могу выполнить, так как передан плохой конфиг';
-				console.log(msg);
-				cnf.callback.failure(msg);
-				return false;
-			}
-			$.ajax({
-				type	: "post"
-				,async	: false
-				,url	: cnf.url
-				,data	: cnf.data
-				,success: function(msg){
-					if ( 'function'===typeof(cnf.callback.success) ){
-						cnf.callback.success(msg);
-					}
-				}
-				,failure: function(msg){
-					console.log(msg);
-					if ( 'function'===typeof(cnf.callback.failure) ){
-						cnf.callback.failure(msg);
-					}
-				}
-			})
+			if( this.is_float(n) ) 
+				n = n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ');
+			else
+				n = new String(n).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
+			return n+'<small> ₽</small>'
 		}
-	}
-	,data	: {
-		json	: {
-			killNullTrim : function(jso){
-				switch( typeof(jso) ){
-					case'object': // ok
-					break;
-					case'string':
-						jso = JSON.parse(jso)
-					break;
-					default:
-						console.log('невозможно приозвести преобразование типов');
-						return null;
-				}
-				return JSON.parse(
-					JSON.stringify(jso, function(key, value) {
-						if(value === null) {
-							return "";
-						}
-						if('string'==typeof(value))
-							return value.trim();
-						// otherwise, leave the value unchanged
-						return value;
-					})
-				);
-			}
+		,moneyFormat2 : function(n){ // округаляет до целых
+			if( isNaN(n) ) return n;
+			n = this.numFormat2(n);
+			return n+'<small> ₽</small>'
 		}
-		,string : {
-			moneyFormat1 : function(n){ // округаляет до сотых или целых
-				if( isNaN(n) ) return n;
-				
-				if( this.is_float(n) ) 
-					n = n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ');
-				else
-					n = new String(n).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
-				return n+'<small> ₽</small>'
-			}
-			,moneyFormat2 : function(n){ // округаляет до целых
-				if( isNaN(n) ) return n;
-				n = this.numFormat2(n);
-				return n+'<small> ₽</small>'
-			}
-			,numFormat2 : function(n){ // округаляет до целых
-				if( isNaN(n) ) return n;
-				return new String( Math.round( n ) ).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
-			}
-			,is_float : function(mixed_var) {
-				return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
-			}
+		,numFormat2 : function(n){ // округаляет до целых
+			if( isNaN(n) ) return n;
+			return new String( Math.round( n ) ).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
 		}
-	}
-	,math : {
-		getRandomInt : function(min, max)
-		{
-			return Math.floor(Math.random() * (max - min + 1)) + min;
+		,is_float : function(mixed_var) {
+			return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
 		}
 	}
 }
