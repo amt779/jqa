@@ -42,8 +42,8 @@ var a = {
 				}
 				,success: function(msg){
 					if ( 'function'===typeof(cnf.callback.success) ){
-						cnf.callback.success(JSON.parse(msg));
-						//cnf.callback.success(msg);
+						//cnf.callback.success(JSON.parse(msg));
+						cnf.callback.success(msg);
 					}
 				}
 				,failure: function(msg){
@@ -71,8 +71,8 @@ var a = {
 				}
 				,success: function(msg){
 					if ( 'function'===typeof(cnf.callback.success) ){
-						cnf.callback.success(JSON.parse(msg));
-						//cnf.callback.success(msg);
+						//cnf.callback.success(JSON.parse(msg));
+						cnf.callback.success(msg);
 					}
 				}
 				,failure: function(msg){
