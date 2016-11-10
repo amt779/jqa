@@ -37,7 +37,7 @@ var a = {
 					,fp			: cnf.fp
 					,output		: {
 						print	: true
-						,format	: 'json'
+						//,format	: 'json' // выключил т.к. не работал http://673.bot.tj/bnstcn
 					}
 				}
 				,success: function(msg){
