@@ -471,26 +471,26 @@ var a = {
 				);
 			}
 		}
-		,string : { // методы для раоты со стройкой
-			moneyFormat1 : function(n){ // округаляет до сотых или целых
+		,string : { // методы для работы со стройкой
+			moneyFormat1 : function(n){ // округляет до сотых или целых
 				if( isNaN(n) ) return n;
 				
 				if( this.is_float(n) ) 
 					n = n.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1 ');
 				else
 					n = new String(n).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
-				return n+'<small> ₽</small>'
+				return n
 			}
-			,moneyFormat2 : function(n){ // округаляет до целых
+			,moneyFormat2 : function(n){ // округляет до целых
 				if( isNaN(n) ) return n;
 				n = this.numFormat2(n);
-				return n+'<small> ₽</small>'
+				return n
 			}
-			,numFormat2 : function(n){ // округаляет до целых
+			,numFormat2 : function(n){ // округляет до целых
 				if( isNaN(n) ) return n;
 				return new String( Math.round( n ) ).replace(/(\d)(?=(\d{3})+([^\d]|$))/g, '$1 ');
 			}
-			,is_float : function(mixed_var) {
+			,is_float : function(mixed_var) { // обязательный метод
 				return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
 			}
 		}
